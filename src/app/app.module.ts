@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
+import { CounterPage } from '../pages/counter/counter';
+import { AboutPage } from '../pages/about/about';
 
 import { Components } from '../components';
 
@@ -15,7 +16,8 @@ export function ngReduxFactory() {
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
+    CounterPage,
+    AboutPage,
     ...Components
   ],
   imports: [
@@ -24,7 +26,8 @@ export function ngReduxFactory() {
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    CounterPage,
+    AboutPage,
   ],
   providers: [
     { provide: NgRedux, useFactory: ngReduxFactory }

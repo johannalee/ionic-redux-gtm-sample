@@ -1,21 +1,27 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Platform, NavController } from 'ionic-angular';
 import { ICounter } from '../../store';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import { select } from 'ng2-redux';
 import { CounterActions } from '../../actions';
+import { AboutPage } from '../about/about';
 
 @Component({
-  selector: 'page-home',
+  selector: 'page-counter',
   providers: [ AsyncPipe, CounterActions ],
-  templateUrl: 'home.html'
+  templateUrl: 'counter.html'
 })
-export class HomePage {
+export class CounterPage {
   @select() counter$: Observable<ICounter>;
 
-  constructor(public navCtrl: NavController,
+  constructor(
+    public platform: Platform,
+    public navCtrl: NavController,
     public actions: CounterActions) {
   }
 
+  navigate() {
+    this.navCtrl.push(AboutPage, {});
+  }
 }

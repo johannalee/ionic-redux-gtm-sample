@@ -1,28 +1,96 @@
-import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Component, ViewChild, HostListener } from '@angular/core';
+import { Platform, MenuController, Nav } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
-import { HomePage } from '../pages/home/home';
+import { CounterPage } from '../pages/counter/counter';
+import { AboutPage } from '../pages/about/about';
 
 import { middleware, enhancers } from '../store';
 import { NgRedux } from 'ng2-redux';
 import { IAppState, rootReducer } from '../store';
 
+import { createMiddleware, EventHelpers, Extensions } from 'redux-gtm';
+const { createGAevent } = EventHelpers;
+
+const logger = Extensions.logger();
+const eventDefinitionsMap = {
+  INCREMENT_COUNTER: {
+    eventFields: (prevState, action) => {
+        return createGAevent({
+            eventAction: 'Increment Counter',
+            eventCategory: 'Counter',
+        });
+    },
+  },
+  DECREMENT_COUNTER: {
+    eventFields: (prevState, action) => {
+        return createGAevent({
+            eventAction: 'Decrement Counter',
+            eventCategory: 'Counter',
+        });
+    },
+  },
+};
+
+const isConnected = state => state.counter.toJS().isConnected;
+const offlineStorage = Extensions.offlineWeb(isConnected);
 
 @Component({
-  template: `<ion-nav [root]="rootPage"></ion-nav>`
+  templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage = HomePage;
+  @ViewChild(Nav) nav: Nav;
 
-  constructor(platform: Platform, private ngRedux: NgRedux<IAppState>) {
-    platform.ready().then(() => {
+  @HostListener('window:online', ['$event'])
+  setOnlineConnectivity(event) {
+    console.log('online');
+    this.ngRedux.dispatch({
+      type: 'UPDATE_CONNECTIVITY',
+      payload: true,
+    });
+  }
+
+  @HostListener('window:offline', ['$event'])
+  setOfflineConnectivity(event) {
+    console.log('offline');
+    this.ngRedux.dispatch({
+      type: 'UPDATE_CONNECTIVITY',
+      payload: false,
+    });
+  }
+
+  rootPage: any = CounterPage;
+  pages: Array<{title: string, component: any}>;
+
+  constructor(
+    public platform: Platform,
+    public menu: MenuController,
+    private ngRedux: NgRedux<IAppState>) {
+      this.initializeApp();
+
+      this.pages = [
+        { title: 'Counter', component: CounterPage },
+        { title: 'About', component: AboutPage },
+      ];
+  }
+
+  initializeApp() {
+    this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
       Splashscreen.hide();
 
-      ngRedux.configureStore(rootReducer, {}, middleware, enhancers);
+      middleware.push(createMiddleware(eventDefinitionsMap, { offlineStorage, logger }));
+
+      this.ngRedux.configureStore(rootReducer, {}, middleware, enhancers);
     });
+  }
+
+  openPage(page) {
+    // close the menu when clicking a link from the menu
+    this.menu.close();
+    // navigate to the new page if it is not the current page
+    this.nav.setRoot(page.component);
   }
 }

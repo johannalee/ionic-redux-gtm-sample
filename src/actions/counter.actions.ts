@@ -6,6 +6,7 @@ import { IAppState } from '../store';
 export class CounterActions {
   static INCREMENT_COUNTER = 'INCREMENT_COUNTER';
   static DECREMENT_COUNTER = 'DECREMENT_COUNTER';
+  static UPDATE_CONNECTIVITY = 'UPDATE_CONNECTIVITY';
 
   constructor(private ngRedux: NgRedux<IAppState>) {}
 
