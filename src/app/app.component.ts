@@ -10,7 +10,7 @@ import { NgRedux } from 'ng2-redux';
 import { IAppState, rootReducer } from '../store';
 
 import { createMiddleware, EventHelpers, Extensions } from 'redux-gtm';
-const { createGAevent } = EventHelpers;
+const { createGAevent, createGApageview } = EventHelpers;
 
 const logger = Extensions.logger();
 const eventDefinitionsMap = {
@@ -30,6 +30,11 @@ const eventDefinitionsMap = {
         });
     },
   },
+  VIEW_CHANGED: {
+    eventFields: (prevState, action) => {
+      return createGApageview(action.payload);
+    }
+  }
 };
 
 const isConnected = state => state.counter.toJS().isConnected;
@@ -88,8 +93,19 @@ export class MyApp {
   }
 
   openPage(page) {
+    // dispatch nav action
+    var currentPage = this.nav.getActive().component;
+
+    if (currentPage.name !== page.component.name) {
+      this.ngRedux.dispatch({
+        type: 'VIEW_CHANGED',
+        payload: page.title,
+      });
+    }
+
     // close the menu when clicking a link from the menu
     this.menu.close();
+
     // navigate to the new page if it is not the current page
     this.nav.setRoot(page.component);
   }
