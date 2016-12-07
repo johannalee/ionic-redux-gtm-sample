@@ -26,4 +26,5 @@ export class Counter {
   @Input() counter: ICounter;
   @Output() increment = new EventEmitter<void>();
   @Output() decrement = new EventEmitter<void>();
+  @Output() updateConnectivity = new EventEmitter<void>();
 };

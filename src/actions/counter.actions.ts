@@ -17,4 +17,11 @@ export class CounterActions {
   decrement() {
     this.ngRedux.dispatch({ type: CounterActions.DECREMENT_COUNTER });
   }
+
+  updateConnectivity(isChecked: boolean) {
+    this.ngRedux.dispatch({
+      type: CounterActions.UPDATE_CONNECTIVITY,
+      payload: !isChecked,
+    });
+  }
 }

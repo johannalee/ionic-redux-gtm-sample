@@ -10,6 +10,15 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-list class='ios-list'>
+    <ion-item-group>
+      <ion-item>
+        <ion-icon color="danger" item-left name="plane" role="img"></ion-icon>
+        <ion-label>Airplane Mode</ion-label>
+        <ion-toggle (ionChange)="actions.updateConnectivity(isChecked)" color="secondary" class="toggle-ios toggle-ios-secondary" [(ngModel)]="isChecked"></ion-toggle>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
   <counter [counter]="counter$ | async" (increment)="actions.increment()" (decrement)="actions.decrement()">
   </counter>
 </ion-content>

@@ -15,6 +15,8 @@ import { AboutPage } from '../about/about';
 export class CounterPage {
   @select() counter$: Observable<ICounter>;
 
+  isChecked: boolean = false;
+
   constructor(
     public platform: Platform,
     public navCtrl: NavController,
@@ -24,4 +26,4 @@ export class CounterPage {
   navigate() {
     this.navCtrl.push(AboutPage, {});
   }
-}
+ }
