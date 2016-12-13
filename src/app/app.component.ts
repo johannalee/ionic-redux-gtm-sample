@@ -12,6 +12,8 @@ import { IAppState, rootReducer } from '../store';
 import { createMiddleware, EventHelpers, Extensions } from 'redux-gtm';
 const { createGAevent, createGApageview } = EventHelpers;
 
+declare const cordova: any;
+
 const logger = Extensions.logger();
 const eventDefinitionsMap = {
   INCREMENT_COUNTER: {
@@ -19,6 +21,8 @@ const eventDefinitionsMap = {
         return createGAevent({
             eventAction: 'Increment Counter',
             eventCategory: 'Counter',
+            eventValue: action.payload,
+            eventLabel: 'Button Click',
         });
     },
   },
@@ -27,6 +31,8 @@ const eventDefinitionsMap = {
         return createGAevent({
             eventAction: 'Decrement Counter',
             eventCategory: 'Counter',
+            eventValue: action.payload,
+            eventLabel: 'Button Click',
         });
     },
   },
@@ -86,7 +92,15 @@ export class MyApp {
       StatusBar.styleDefault();
       Splashscreen.hide();
 
-      middleware.push(createMiddleware(eventDefinitionsMap, { offlineStorage, logger }));
+      var tagManager = cordova.require('com.jareddickson.cordova.tag-manager.TagManager');
+      tagManager.init(null, null, 'GTM-PBMVH9C', 1);
+      var customDataLayer = {
+        push(event) {
+          tagManager.trackEvent(null, null, event.eventCategory, event.eventAction, event.eventLabel, event.eventValue);
+        }
+      }
+
+      middleware.push(createMiddleware(eventDefinitionsMap, { customDataLayer, offlineStorage, logger }));
 
       this.ngRedux.configureStore(rootReducer, {}, middleware, enhancers);
     });
