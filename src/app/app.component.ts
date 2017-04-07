@@ -96,7 +96,18 @@ export class MyApp {
       tagManager.init(null, null, 'GTM-PBMVH9C', 1);
       var customDataLayer = {
         push(event) {
-          tagManager.trackEvent(null, null, event.eventCategory, event.eventAction, event.eventLabel, event.eventValue);
+          switch(event.hitType) {
+            case 'event':
+              tagManager.trackEvent(null, null, event.eventCategory, event.eventAction, event.eventLabel, event.eventValue);
+            break;
+
+            case 'pageview':
+              tagManager.trackPage(null, null, event.page);
+            break;
+
+            default:
+            break;
+          }
         }
       }
 
