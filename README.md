@@ -1,6 +1,6 @@
-# Ionic 2 + Angular 2 + Typescript + Redux Starter
+# Ionic 2 Redux-GTM Sample App
 
-This is a starter package for Ionic + Angular + Typescript + Redux. It should give a basis for your project if you want to use above frameworks.
+This app is built on (Ionic2 + Angular + Typescript + Redux application)[https://github.com/xiongemi/ionic2-stater-ts-redux] to demonstrate how (redux-gtm)[https://github.com/rangle/redux-gtm] can be implmented in Ionic app.
 
 ## How to Setup
 1. In console, go to the project root folder. Type in `npm install`.
